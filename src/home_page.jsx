@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './application.css';
 import { Component } from "react";
 
-export default class NearUApplication extends Component{
+export default class HomePage extends Component{
   render () {
     return (
       <div className="App">

@@ -4,6 +4,7 @@ import './index.css';
 import HomePage from "./home_page";
 import logo from "./images/logo.png";
 import ScanPage from "./scan";
+import { BrowserRouter, Route } from "react-router-dom";
 
 const LOGO_SIZE = 192;
 
