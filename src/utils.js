@@ -1,3 +1,5 @@
+const DOMPurify = require("dompurify");
+
 export function getParameterByName(name, separator = "?", props) {
   const searchString = props.location.search;
   const match = new RegExp(`[${separator}&]` + name + "=([^&]*)").exec(searchString);
