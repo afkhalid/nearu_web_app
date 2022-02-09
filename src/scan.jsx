@@ -43,6 +43,7 @@ export default class ScanPage extends Component {
           <img src={logo}
                width={100}
                height={130}
+               alt="NearU Logo"
           />
         </div>
         <div className="message-container">
