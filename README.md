@@ -21,3 +21,6 @@ To get this project up and running you need to run the following scripts
 
 ## Adding GitHub Action to enable auto deployment to FireBase
 [Adding GitHub Action](https://firebase.google.com/docs/hosting/github-integration)
+
+## To be able to push to github you need to ask afathy for an access token
+[IntelliJ Adding GitHub Access Token](https://www.jetbrains.com/help/idea/github.html)
