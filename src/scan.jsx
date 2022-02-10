@@ -53,11 +53,18 @@ export default class ScanPage extends Component {
             <Form>
               <Form.Group className="mb-3">
                 <Form.Label>Message</Form.Label>
-                <Form.Control as="textarea" placeholder="Write your message here .." rows={4} />
+                <Form.Control as="textarea"
+                              placeholder="Write your message here .."
+                              disabled={!user}
+                              rows={4}
+                />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>If you want the owner to call you back, please leave your phone number</Form.Label>
-                <Form.Control type="text" placeholder="+2 xxx xxxx xxxx" />
+                <Form.Control type="text"
+                              disabled={!user}
+                              placeholder="+2 xxx xxxx xxxx"
+                />
               </Form.Group>
               <Form.Group className="mt-5">
                 <Button variant="primary"
