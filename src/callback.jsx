@@ -1,5 +1,4 @@
 import { Component } from "react";
-import { Text, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     baseText: {
@@ -16,9 +15,9 @@ export default class CallbackPage extends Component {
 
     render() {
         return (
-            <Text style={styles.baseText}>
-                Kindly restart the application to activate you subscription if payment successed.
-            </Text>
+            <div className="centered">
+                <div className="restart-app-header">Kindly restart the application to activate your subscription if already successed</div>
+            </div>
         );
     }
     
