@@ -1,10 +1,5 @@
 import { Component } from "react";
 
-const styles = StyleSheet.create({
-    baseText: {
-      fontWeight: 'bold'
-    },
-  });
 export default class CallbackPage extends Component {
     constructor(props) {
         super(props);
