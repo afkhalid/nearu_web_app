@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { getParameterByName } from "./utils";
+import { getParameterByName, isMobile } from "./utils";
 import logo from "./images/logo.svg";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import FIRE_STORE_CONFIG from "./configs/firestore.json";
@@ -31,8 +31,12 @@ export default class ScanPage extends Component {
     }
   }
 
-  handleShowNumber() {
-    this.setState({showPhoneNumber: true});
+  handleNumberOperation() {
+    if (isMobile()) {
+      window.open(this.state.user.phone);
+    } else {
+      this.setState({showPhoneNumber: true});
+    }
   }
 
   render() {
@@ -75,9 +79,9 @@ export default class ScanPage extends Component {
                 <Button className="show-number-button"
                         variant="secondary"
                         disabled={!user}
-                        onClick={this.handleShowNumber.bind(this)}
+                        onClick={this.handleNumberOperation.bind(this)}
                 >
-                  {showPhoneNumber ? user.phone : "Show Number"}
+                  {isMobile() ? "Call Owner" : showPhoneNumber ? user.phone : "Show Number"}
                 </Button>
                 {isLoading ? <Spinner animation="border"
                                       className="spinner"
