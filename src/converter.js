@@ -12,7 +12,9 @@ export default class Converters {
     },
     fromFirestore: (snapshot, options) => {
       const data = snapshot.data(options);
-      return new User(data.fullName, data.phone, data.numberOfTags);
+      return new User(data.fullName,
+        data.phone,
+        data.numberOfTags,);
     },
   };
 
@@ -23,6 +25,7 @@ export default class Converters {
         phoneNumber: tag.phoneNumber,
         ownerUID: tag.ownerUID,
         additionalInformation: tag.additionalInformation,
+        showPhoneNumberWhenScanned: tag.showPhoneNumberWhenScanned,
       };
     },
     fromFirestore: (snapshot, options) => {
@@ -31,7 +34,8 @@ export default class Converters {
         data.name,
         data.phoneNumber,
         data.ownerUID,
-        data.additionalInformation
+        data.additionalInformation,
+        data.showPhoneNumberWhenScanned,
       );
     },
   };

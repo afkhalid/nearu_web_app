@@ -1,9 +1,10 @@
 export default class Tag {
-  constructor(name, phoneNumber, ownerUID, additionalInformation) {
+  constructor(name, phoneNumber, ownerUID, additionalInformation, showPhoneNumberWhenScanned) {
     this.name = name;
     this.phoneNumber = phoneNumber;
     this.ownerUID = ownerUID;
     this.additionalInformation = additionalInformation;
+    this.showPhoneNumberWhenScanned = showPhoneNumberWhenScanned;
   }
 
   toString() {
@@ -14,7 +15,9 @@ export default class Tag {
       ', ' +
       this.ownerUID +
       ', ' +
-      this.additionalInformation
+      this.additionalInformation+
+      ', ' +
+      this.showPhoneNumberWhenScanned
     );
   }
 }

@@ -33,6 +33,7 @@ export default class DataLoader {
     );
 
     const usersSnapshot = await getDocs(usersQuery);
-    return usersSnapshot.docs.map(doc => doc.data())[0];
+    const user = usersSnapshot.docs.map(doc => doc.data())[0];
+    return {...user, showPhoneNumberWhenScanned: databaseTag.showPhoneNumberWhenScanned};
   }
 }

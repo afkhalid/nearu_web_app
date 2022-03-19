@@ -76,22 +76,23 @@ export default class ScanPage extends Component {
                 >
                   Send Message
                 </Button>
-                {isMobile() ?
-                  <a href="tel:+201007032896">
+                {user && user.showPhoneNumberWhenScanned ?
+                  isMobile() ?
+                    <a href="tel:+201007032896">
+                      <Button className="show-number-button"
+                              variant="secondary"
+                              disabled={!user}
+                      >
+                        Call Owner
+                      </Button>
+                    </a> :
                     <Button className="show-number-button"
                             variant="secondary"
                             disabled={!user}
+                            onClick={this.handleNumberOperation.bind(this)}
                     >
-                      Call Owner
-                    </Button>
-                  </a> :
-                  <Button className="show-number-button"
-                          variant="secondary"
-                          disabled={!user}
-                          onClick={this.handleNumberOperation.bind(this)}
-                  >
-                    {showPhoneNumber ? user.phone : "Show Number"}
-                  </Button>}
+                      {showPhoneNumber ? user.phone : "Show Number"}
+                    </Button> : ""}
                 {isLoading ? <Spinner animation="border"
                                       className="spinner"
                 /> : ""}
