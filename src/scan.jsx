@@ -4,8 +4,7 @@ import logo from "./images/logo.svg";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import FIRE_STORE_CONFIG from "./configs/firestore.json";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import DataLoader from "./loader";
+import { getFunctions, connectFunctionsEmulator, httpsCallable } from "firebase/functions";
 
 export default class ScanPage extends Component {
   constructor(props) {
@@ -21,13 +20,15 @@ export default class ScanPage extends Component {
 
   async componentDidMount() {
     const fireBaseApplication = initializeApp(FIRE_STORE_CONFIG);
-    const database = getFirestore(fireBaseApplication);
-    const dataLoader = new DataLoader({db: database, code: this.state.code});
-    const user = await dataLoader.loadUsers();
+    const functions = getFunctions(fireBaseApplication);
+    // connectFunctionsEmulator(functions, "localhost", 5001);
+    const getUserInformation = httpsCallable(functions, 'getUserInformation');
+    const user = await getUserInformation({ code: this.state.code });
+
     if (!user) {
       this.setState({isLoading: false, showUserNotFound: true});
     } else {
-      this.setState({isLoading: false, user});
+      this.setState({isLoading: false, user: user.data});
     }
   }
 
