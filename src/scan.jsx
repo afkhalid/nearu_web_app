@@ -79,7 +79,7 @@ export default class ScanPage extends Component {
                 </Button>
                 {user && user.showPhoneNumberWhenScanned ?
                   isMobile() ?
-                    <a href="tel:+201007032896">
+                    <a href={`tel:${user.phone}`}>
                       <Button className="show-number-button"
                               variant="secondary"
                               disabled={!user}
