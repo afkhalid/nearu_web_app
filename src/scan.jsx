@@ -9,7 +9,14 @@ import { getFunctions, connectFunctionsEmulator, httpsCallable } from "firebase/
 export default class ScanPage extends Component {
   constructor(props) {
     super(props);
+
     const code = getParameterByName("code", this.props);
+
+    this.fireBaseApplication = initializeApp(FIRE_STORE_CONFIG);
+    this.functions = getFunctions(this.fireBaseApplication);
+
+    connectFunctionsEmulator(this.functions, "localhost", 5001);
+
     this.state = {
       isLoading: true,
       showUserNotFound: false,
@@ -19,29 +26,39 @@ export default class ScanPage extends Component {
   }
 
   async componentDidMount() {
-    const fireBaseApplication = initializeApp(FIRE_STORE_CONFIG);
-    const functions = getFunctions(fireBaseApplication);
-    // connectFunctionsEmulator(functions, "localhost", 5001);
-    const getUserInformation = httpsCallable(functions, 'getUserInformation');
-    const user = await getUserInformation({ code: this.state.code });
+    const getUserInformation = httpsCallable(this.functions, 'getUserInformation');
+    const tag = await getUserInformation({code: this.state.code});
 
-    if (!user) {
+    if (!tag) {
       this.setState({isLoading: false, showUserNotFound: true});
     } else {
-      this.setState({isLoading: false, user: user.data});
+      this.setState({isLoading: false, tag: tag.data});
     }
   }
 
   handleNumberOperation() {
     if (isMobile()) {
-      window.open(this.state.user.phone);
+      window.open(this.state.tag.phoneNumber);
     } else {
       this.setState({showPhoneNumber: true});
     }
   }
 
+  handleUpdateText(fieldName, e) {
+    const text = e.target.value;
+    this.setState({[fieldName]: text});
+  }
+
+  async handleSendMessage(e) {
+    e.preventDefault();
+
+    const {code, message, phone} = this.state;
+    const sendMessageFunction = httpsCallable(this.functions, 'sendMessage');
+    await sendMessageFunction({code, message, phone});
+  }
+
   render() {
-    const {isLoading, user, showPhoneNumber, showUserNotFound} = this.state;
+    const {isLoading, tag, showPhoneNumber, showUserNotFound} = this.state;
     return (
       <div className="centered">
         <div className="send-message-logo">
@@ -55,44 +72,48 @@ export default class ScanPage extends Component {
           <div className="inner-message-container">
             <div className="send-message-header">SEND MESSAGE</div>
             <div className="send-message-sub-header">Your message will help the owner find his stuff!</div>
-            <Form>
+            <Form onSubmit={this.handleSendMessage.bind(this)}>
               <Form.Group className="mb-3">
                 <Form.Label>Message</Form.Label>
                 <Form.Control as="textarea"
                               placeholder="Write your message here .."
-                              disabled={!user}
+                              disabled={!tag}
+                              onChange={this.handleUpdateText.bind(this, "message")}
                               rows={4}
+                              required
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>If you want the owner to call you back, please leave your phone number</Form.Label>
                 <Form.Control type="text"
-                              disabled={!user}
+                              disabled={!tag}
+                              onChange={this.handleUpdateText.bind(this, "phone")}
                               placeholder="+2 xxx xxxx xxxx"
                 />
               </Form.Group>
               <Form.Group className="mt-5">
                 <Button variant="primary"
-                        disabled={!user}
+                        disabled={!tag}
+                        type="submit"
                 >
                   Send Message
                 </Button>
-                {user && user.showPhoneNumberWhenScanned ?
+                {tag && tag.showPhoneNumberWhenScanned ?
                   isMobile() ?
-                    <a href={`tel:${user.phone}`}>
+                    <a href={`tel:${tag.phoneNumber}`}>
                       <Button className="show-number-button"
                               variant="secondary"
-                              disabled={!user}
+                              disabled={!tag}
                       >
                         Call Owner
                       </Button>
                     </a> :
                     <Button className="show-number-button"
                             variant="secondary"
-                            disabled={!user}
+                            disabled={!tag}
                             onClick={this.handleNumberOperation.bind(this)}
                     >
-                      {showPhoneNumber ? user.phone : "Show Number"}
+                      {showPhoneNumber ? tag.phoneNumber : "Show Number"}
                     </Button> : ""}
                 {isLoading ? <Spinner animation="border"
                                       className="spinner"

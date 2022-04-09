@@ -3,28 +3,42 @@ const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-exports.getUserInformation = functions.https.onCall(async (data) => {
-  const code = data.code;
-  const db = admin.firestore();
+const db = admin.firestore();
 
+exports.getUserInformation = functions.https.onCall(async(data) => {
+  const tag = await getTag(data.code);
+
+  if (!tag.showPhoneNumberWhenScanned) {
+    delete tag.phoneNumber;
+  }
+
+  return {
+    phoneNumber: tag.phoneNumber,
+    showPhoneNumberWhenScanned: tag.showPhoneNumberWhenScanned,
+  };
+});
+
+exports.sendMessage = functions.https.onCall(async(data) => {
+  const message = data.message;
+  const phone = data.phone;
+  const code = data.code;
+  const tag = await getTag(code);
+  console.log(phone);
+  console.log(code);
+  console.log(message);
+  console.log("TAG", tag);
+  const result = await db.collection("messages")
+    .doc().set({message, phone, toUID: tag.ownerUID});
+  console.log("RESULT:", result);
+});
+
+const getTag = async(code) => {
   const tagsSnapshot = await db.collectionGroup("tags")
-      .where("code", "==", code).get();
+    .where("code", "==", code).get();
 
   if (tagsSnapshot.docs.length === 0) {
     return null;
   }
 
-  const databaseTag = tagsSnapshot.docs.map((doc) => doc.data())[0];
-  const uuid = databaseTag.ownerUID;
-  const usersSnapshot = await db.collection("users")
-      .where("uid", "==", uuid).get();
-
-  const user = usersSnapshot.docs.map((doc) => doc.data())[0];
-  user.showPhoneNumberWhenScanned = databaseTag.showPhoneNumberWhenScanned;
-
-  if (!user.showPhoneNumberWhenScanned) {
-    delete user.phone;
-  }
-
-  return user;
-});
+  return tagsSnapshot.docs.map((doc) => doc.data())[0];
+};

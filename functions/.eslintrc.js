@@ -1,15 +1,18 @@
 module.exports = {
-  root: true,
-  env: {
+  "root": true,
+  "env": {
     es6: true,
     node: true,
   },
-  extends: [
+  "extends": [
     "eslint:recommended",
     "google",
   ],
-  rules: {
-    quotes: ["error", "double"],
+  "rules": {
+    "quotes": ["warn", "double"],
+    "indent": ["warn", 2],
+    "space-before-function-paren": ["warn", "never"],
+    "no-unused-vars": ["warn", "all"],
   },
   "parser": "babel-eslint",
   "parserOptions": {
@@ -18,5 +21,5 @@ module.exports = {
       "experimentalObjectRestSpread": true,
     },
     "sourceType": "module",
-  }
+  },
 };
