@@ -15,7 +15,7 @@ export default class ScanPage extends Component {
     this.fireBaseApplication = initializeApp(FIRE_STORE_CONFIG);
     this.functions = getFunctions(this.fireBaseApplication);
 
-    connectFunctionsEmulator(this.functions, "localhost", 5001);
+    // connectFunctionsEmulator(this.functions, "localhost", 5001);
 
     this.state = {
       isLoading: true,
