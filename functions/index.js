@@ -8,7 +8,9 @@ const db = admin.firestore();
 exports.getUserInformation = functions.https.onCall(async(data) => {
   const tag = await getTag(data.code);
 
-  if (!tag.showPhoneNumberWhenScanned) {
+  if (!tag) {
+    return null;
+  } else if (!tag.showPhoneNumberWhenScanned) {
     delete tag.phoneNumber;
   }
 
@@ -23,10 +25,6 @@ exports.sendMessage = functions.https.onCall(async(data) => {
   const phone = data.phone;
   const code = data.code;
   const tag = await getTag(code);
-  console.log(phone);
-  console.log(code);
-  console.log(message);
-  console.log("TAG", tag);
   const result = await db.collection("messages")
     .doc().set({message, phone, toUID: tag.ownerUID});
   console.log("RESULT:", result);
