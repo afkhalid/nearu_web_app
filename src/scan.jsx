@@ -29,7 +29,7 @@ export default class ScanPage extends Component {
     const getUserInformation = httpsCallable(this.functions, 'getUserInformation');
     const tag = await getUserInformation({code: this.state.code});
 
-    if (!tag) {
+    if (!tag || (tag && !tag.data)) {
       this.setState({isLoading: false, showUserNotFound: true});
     } else {
       this.setState({isLoading: false, tag: tag.data});
