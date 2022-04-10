@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const {v4: uuidv4} = require("uuid");
 
 admin.initializeApp();
 
@@ -21,13 +22,17 @@ exports.getUserInformation = functions.https.onCall(async(data) => {
 });
 
 exports.sendMessage = functions.https.onCall(async(data) => {
-  const message = data.message;
-  const phone = data.phone;
-  const code = data.code;
-  const tag = await getTag(code);
-  const result = await db.collection("messages")
-    .doc().set({message, phone, toUID: tag.ownerUID});
-  console.log("RESULT:", result);
+  try {
+    const message = data.message;
+    const phone = data.phone;
+    const code = data.code;
+    const tag = await getTag(code);
+    const result = await db.collection("messages")
+      .add({message, phone, toUID: tag.ownerUID, id: uuidv4()});
+    return result.id;
+  } catch {
+    return null;
+  }
 });
 
 const getTag = async(code) => {
