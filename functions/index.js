@@ -28,7 +28,10 @@ exports.sendMessage = functions.https.onCall(async(data) => {
     const code = data.code;
     const tag = await getTag(code);
     const result = await db.collection("messages")
-      .add({message, phone, toUID: tag.ownerUID, id: uuidv4()});
+      .add({
+        message, phone, toUID: tag.ownerUID, id: uuidv4(),
+        createdAt: new Date(), type: tag.type, name: tag.name,
+      });
     return result.id;
   } catch {
     return null;
