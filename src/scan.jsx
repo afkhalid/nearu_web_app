@@ -11,6 +11,7 @@ export default class ScanPage extends Component {
     super(props);
 
     const code = getParameterByName("code", this.props);
+    window.history.replaceState({}, "", "/scan.html");
 
     this.fireBaseApplication = initializeApp(FIRE_STORE_CONFIG);
     this.functions = getFunctions(this.fireBaseApplication);
@@ -55,9 +56,9 @@ export default class ScanPage extends Component {
       const {code, message, phone} = this.state;
       const sendMessageFunction = httpsCallable(this.functions, 'sendMessage');
       const result = await sendMessageFunction({code, message, phone});
-      if(result?.data) {
+      if (result?.data) {
         this.setState({isLoading: false});
-        window.open("/confirmation.html","_self");
+        window.open("/confirmation.html", "_self");
       }
     });
   }
@@ -124,11 +125,15 @@ export default class ScanPage extends Component {
                                       className="spinner"
                 /> : ""}
               </Form.Group>
-              {showUserNotFound ? <Alert className="mt-2"
-                                         variant="danger"
-              >
-                No data found for this tag!
-              </Alert> : ""}
+              {showUserNotFound ?
+                <Alert className="mt-2" variant="danger">
+                  No data found for this tag!
+                </Alert> : ""}
+              {tag?.additionalInformation ?
+                <Alert className="mt-2" variant="info">
+                  <h6 className="text-decoration-underline">IMPORTANT!</h6>
+                  {tag.additionalInformation}
+                </Alert> : ""}
             </Form>
           </div>
         </div>

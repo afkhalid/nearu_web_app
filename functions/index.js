@@ -18,6 +18,7 @@ exports.getUserInformation = functions.https.onCall(async(data) => {
   return {
     phoneNumber: tag.phoneNumber,
     showPhoneNumberWhenScanned: tag.showPhoneNumberWhenScanned,
+    additionalInformation: tag.additionalInformation,
   };
 });
 
