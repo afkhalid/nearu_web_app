@@ -9,7 +9,7 @@ export default class ConfirmationPage extends Component {
           <img src={confirmation}
                alt="Message Sent!"
           />
-          <div className="message-sent-header">THANKS YOU!</div>
+          <div className="message-sent-header">THANK YOU!</div>
           <div className="message-sub-header">Your message has been sent successfully!</div>
         </div>
       </div>

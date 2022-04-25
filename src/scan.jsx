@@ -102,7 +102,7 @@ export default class ScanPage extends Component {
                         disabled={!tag}
                         type="submit"
                 >
-                  Send Message
+                  Contact Owner
                 </Button>
                 {tag && tag.showPhoneNumberWhenScanned ?
                   isMobile() ?
