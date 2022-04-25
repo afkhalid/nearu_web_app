@@ -76,7 +76,7 @@ export default class ScanPage extends Component {
         </div>
         <div className="message-container">
           <div className="inner-message-container">
-            <div className="send-message-header">SEND MESSAGE</div>
+            <div className="send-message-header">CONTACT OWNER</div>
             <div className="send-message-sub-header">Your message will help the owner find his stuff!</div>
             <Form onSubmit={this.handleSendMessage.bind(this)}>
               <Form.Group className="mb-3">
@@ -102,7 +102,7 @@ export default class ScanPage extends Component {
                         disabled={!tag}
                         type="submit"
                 >
-                  Contact Owner
+                  Send Message
                 </Button>
                 {tag && tag.showPhoneNumberWhenScanned ?
                   isMobile() ?
