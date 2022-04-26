@@ -31,16 +31,35 @@ code {
   margin-bottom: 10px;
 }
 
-.message-sub-header {
+.message-sub-header,
+.made-with-love {
   color: #a3abbd;
   font-size: 16px;
-  margin-bottom: 35px;
+  margin-bottom: 65px;
+}
+
+.download-our-app-header {
+  color: #002776;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.download-our-app-header > span {
+  color: #0099FF;
 }
 
 .send-message-sub-header {
   color: #a3abbd;
   font-size: 11px;
   margin-bottom: 35px;
+}
+
+.made-with-love {
+  position: absolute;
+  bottom: -50px;
+  text-align: center;
+  width: 100%;
 }
 
 .send-message-label {
@@ -100,4 +119,9 @@ code {
     padding-left: 75px;
     padding-right: 75px;
   }
+}
+
+.store-buttons {
+  display: flex;
+  justify-content: space-evenly;
 }
