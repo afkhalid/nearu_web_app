@@ -11,12 +11,9 @@ import ConfirmationPage from "./confirmation";
 ReactDOM.render(
   <BrowserRouter>
     <Fragment>
-      <div className="content">
-        <Route path="/" exact component={() => <HomePage />} />
-        <Route path="/scan.html" exact component={(props) => <ScanPage {...props} />} />
-        <Route path="/confirmation.html" exact component={(props) => <ConfirmationPage {...props} />} />
-      </div>
-      <div className="made-with-love">Made with ❤ by NearU!</div>
+      <Route path="/" exact component={() => <HomePage />} />
+      <Route path="/scan.html" exact component={(props) => <ScanPage {...props} />} />
+      <Route path="/confirmation.html" exact component={(props) => <ConfirmationPage {...props} />} />
     </Fragment>
   </BrowserRouter>,
   document.getElementById('root')
