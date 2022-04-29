@@ -1,14 +1,14 @@
 body {
   margin: 0;
-  font-family: 'Montserrat', 'Roboto', sans-serif;
+  font-family: "Montserrat", "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: url("../images/background.svg") repeat-x fixed center bottom;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-  monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 .send-message-logo {
@@ -31,8 +31,12 @@ code {
   margin-bottom: 10px;
 }
 
-.message-sub-header,
-.made-with-love {
+label[for="form-message"]::after {
+  content: "*";
+  color: red;
+}
+
+.message-sub-header {
   color: #a3abbd;
   font-size: 16px;
   margin-bottom: 65px;
@@ -46,18 +50,18 @@ code {
 }
 
 .download-our-app-header > span {
-  color: #0099FF;
+  color: #0099ff;
 }
 
 .send-message-sub-header {
   color: #a3abbd;
   font-size: 11px;
-  margin-bottom: 35px;
 }
 
 .made-with-love {
-  position: absolute;
-  bottom: -50px;
+  color: #a3abbd;
+  font-size: 16px;
+  margin-bottom: 30px;
   text-align: center;
   width: 100%;
 }
@@ -70,10 +74,9 @@ code {
   margin-left: 5px;
 }
 
-.spinner {
-  margin-left: 5px;
-  vertical-align: middle !important;
-  color: #0d6efd;
+.loading {
+  margin-right: 0.3rem;
+  color: #e9e9e9da;
 }
 
 @media (max-width: 600px) {
@@ -85,6 +88,7 @@ code {
   .message-container {
     background-color: #fff;
     margin-top: 50px;
+    margin-bottom: 30px;
     margin-right: 20px;
     margin-left: 20px;
   }
@@ -93,10 +97,6 @@ code {
     padding-left: 0;
     padding-right: 0;
     padding-top: 0;
-  }
-
-  .scan-page .made-with-love {
-    display: none;
   }
 }
 
@@ -119,9 +119,7 @@ code {
   }
 
   .inner-message-container {
-    padding-top: 55px;
-    padding-left: 75px;
-    padding-right: 75px;
+    padding: 55px 75px 0;
   }
 }
 
