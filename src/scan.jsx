@@ -9,6 +9,7 @@ import {
   connectFunctionsEmulator,
   httpsCallable,
 } from "firebase/functions";
+import DownloadApp from "./download_app";
 
 export default class ScanPage extends Component {
   constructor(props) {
@@ -35,12 +36,12 @@ export default class ScanPage extends Component {
       this.functions,
       "getUserInformation"
     );
-    const tag = await getUserInformation({ code: this.state.code });
+    const tag = await getUserInformation({code: this.state.code});
 
     if (!tag || (tag && !tag.data)) {
-      this.setState({ isLoading: false, showUserNotFound: true });
+      this.setState({isLoading: false, showUserNotFound: true});
     } else {
-      this.setState({ isLoading: false, tag: tag.data });
+      this.setState({isLoading: false, tag: tag.data});
     }
   }
 
@@ -48,30 +49,30 @@ export default class ScanPage extends Component {
     if (isMobile()) {
       window.open(this.state.tag.phoneNumber);
     } else {
-      this.setState({ showPhoneNumber: true });
+      this.setState({showPhoneNumber: true});
     }
   }
 
   handleUpdateText(fieldName, e) {
     const text = e.target.value;
-    this.setState({ [fieldName]: text });
+    this.setState({[fieldName]: text});
   }
 
   async handleSendMessage(e) {
     e.preventDefault();
-    this.setState({ isLoading: true }, async () => {
-      const { code, message, phone } = this.state;
+    this.setState({isLoading: true}, async() => {
+      const {code, message, phone} = this.state;
       const sendMessageFunction = httpsCallable(this.functions, "sendMessage");
-      const result = await sendMessageFunction({ code, message, phone });
+      const result = await sendMessageFunction({code, message, phone});
       if (result?.data) {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
         window.open("/confirmation.html", "_self");
       }
     });
   }
 
   render() {
-    const { isLoading, tag, showPhoneNumber, showUserNotFound } = this.state;
+    const {isLoading, tag, showPhoneNumber, showUserNotFound} = this.state;
     return (
       <div className="scan-page">
         <div className="content">
@@ -82,20 +83,19 @@ export default class ScanPage extends Component {
             <div className="inner-message-container">
               <div className="send-message-header">CONTACT OWNER</div>
               {showUserNotFound ? (
-                <Alert className="mt-2" variant="danger">
-                  No data found for this tag!
-                </Alert>
-              ) : (
-                ""
-              )}
+                <Fragment>
+                  <Alert className="mt-2" variant="danger">
+                    No data found for this tag!
+                  </Alert>
+                  <DownloadApp />
+                </Fragment>
+              ) : ""}
               {tag?.additionalInformation ? (
                 <Alert className="mt-2" variant="info">
                   <Alert.Heading as="h5">Note from the Owner</Alert.Heading>
                   {tag.additionalInformation}
                 </Alert>
-              ) : (
-                ""
-              )}
+              ) : ""}
               <Form onSubmit={this.handleSendMessage.bind(this)}>
                 <Form.Group className="mb-3">
                   <Form.Label>Mobile Number</Form.Label>
@@ -145,9 +145,7 @@ export default class ScanPage extends Component {
                         {showPhoneNumber ? tag.phoneNumber : "Show Number"}
                       </Button>
                     )
-                  ) : (
-                    ""
-                  )}
+                  ) : ""}
                   {isLoading ? (
                     <Button className="show-number-button" variant="secondary">
                       <Spinner
@@ -160,9 +158,7 @@ export default class ScanPage extends Component {
                       />
                       Loading
                     </Button>
-                  ) : (
-                    ""
-                  )}
+                  ) : ""}
                 </Form.Group>
               </Form>
             </div>
