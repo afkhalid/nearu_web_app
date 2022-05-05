@@ -12,6 +12,7 @@ module.exports = {
     "quotes": ["warn", "double"],
     "indent": ["warn", 2],
     "space-before-function-paren": ["warn", "never"],
+    "no-trailing-spaces": ["warn", {"skipBlankLines": true}],
     "no-unused-vars": ["warn", "all"],
   },
   "parser": "babel-eslint",
