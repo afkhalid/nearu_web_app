@@ -8,7 +8,7 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  monospace;
 }
 
 .send-message-logo {
@@ -23,12 +23,17 @@ code {
   margin-bottom: 10px;
 }
 
-.message-sent-header {
+.message-sent-header,
+.tag-not-found-header {
   color: #002776;
   font-size: 32px;
   font-weight: 600;
   margin-top: 50px;
   margin-bottom: 10px;
+}
+
+.tag-not-found-header {
+  color: #ff5490;
 }
 
 label[for="form-message"]::after {
@@ -64,6 +69,12 @@ label[for="form-message"]::after {
   margin-bottom: 30px;
   text-align: center;
   width: 100%;
+  bottom: 50px;
+  position: absolute;
+}
+
+.scan-page .made-with-love {
+  display: none;
 }
 
 .send-message-label {
@@ -83,6 +94,7 @@ label[for="form-message"]::after {
   .content {
     left: 50%;
     margin: 50px auto auto;
+    height: 100%;
   }
 
   .message-container {
@@ -103,9 +115,12 @@ label[for="form-message"]::after {
 @media (min-width: 600px) {
   .content {
     margin: 50px auto auto;
+    margin-top: 0;
+    padding-top: 50px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    height: 100%;
   }
 
   .message-container {
