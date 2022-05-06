@@ -1,11 +1,12 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import confirmation from "./images/confirmation.svg";
-import DownloadApp from "./download_app";
+import DownloadApp from "./widgets/download_app";
+import MadeWithLove from "./widgets/made_with_love";
 
 export default class ConfirmationPage extends Component {
   render() {
     return (
-      <Fragment>
+      <div>
         <div className="content">
           <div className="send-message-logo">
             <img src={confirmation}
@@ -13,11 +14,11 @@ export default class ConfirmationPage extends Component {
             />
             <div className="message-sent-header">THANK YOU!</div>
             <div className="message-sub-header">Your message has been sent successfully!</div>
-            <DownloadApp />
+            <DownloadApp showTitle={true} />
           </div>
+          <MadeWithLove />
         </div>
-        <div className="made-with-love">Made with ❤ by NearU!</div>
-      </Fragment>
+      </div>
     );
   }
 }

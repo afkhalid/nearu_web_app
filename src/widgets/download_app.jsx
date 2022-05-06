@@ -1,12 +1,16 @@
 import { Component, Fragment } from "react";
-import ios from "./images/ios.svg";
-import android from "./images/android.svg";
+import ios from "../images/ios.svg";
+import android from "../images/android.svg";
 
 export default class DownloadApp extends Component {
   render() {
+    const {showTitle} = this.props;
     return (
       <Fragment>
-        <div className="download-our-app-header">DOWNLOAD OUR APP FOR <span>FREE</span>!</div>
+        {showTitle ?
+          <div className="download-our-app-header">
+            DOWNLOAD OUR APP FOR <span>FREE</span>!
+          </div> : ""}
         <div className="store-buttons">
           <div>
             <a target="_blank"

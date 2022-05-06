@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { getParameterByName, isMobile } from "./utils";
 import logo from "./images/logo.svg";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
@@ -9,7 +9,7 @@ import {
   connectFunctionsEmulator,
   httpsCallable,
 } from "firebase/functions";
-import DownloadApp from "./download_app";
+import MadeWithLove from "./widgets/made_with_love";
 
 export default class ScanPage extends Component {
   constructor(props) {
@@ -25,7 +25,6 @@ export default class ScanPage extends Component {
 
     this.state = {
       isLoading: true,
-      showUserNotFound: false,
       showPhoneNumber: false,
       code,
     };
@@ -39,7 +38,8 @@ export default class ScanPage extends Component {
     const tag = await getUserInformation({code: this.state.code});
 
     if (!tag || (tag && !tag.data)) {
-      this.setState({isLoading: false, showUserNotFound: true});
+      this.setState({isLoading: false});
+      window.open("/tagNotFound.html", "_self");
     } else {
       this.setState({isLoading: false, tag: tag.data});
     }
@@ -72,7 +72,7 @@ export default class ScanPage extends Component {
   }
 
   render() {
-    const {isLoading, tag, showPhoneNumber, showUserNotFound} = this.state;
+    const {isLoading, tag, showPhoneNumber} = this.state;
     return (
       <div className="scan-page">
         <div className="content">
@@ -82,14 +82,6 @@ export default class ScanPage extends Component {
           <div className="message-container">
             <div className="inner-message-container">
               <div className="send-message-header">CONTACT OWNER</div>
-              {showUserNotFound ? (
-                <Fragment>
-                  <Alert className="mt-2" variant="danger">
-                    No data found for this tag!
-                  </Alert>
-                  <DownloadApp />
-                </Fragment>
-              ) : ""}
               {tag?.additionalInformation ? (
                 <Alert className="mt-2" variant="info">
                   <Alert.Heading as="h5">Note from the Owner</Alert.Heading>
@@ -163,7 +155,7 @@ export default class ScanPage extends Component {
               </Form>
             </div>
           </div>
-          <div className="made-with-love">Made with ❤ by NearU!</div>
+          <MadeWithLove />
         </div>
       </div>
     );
