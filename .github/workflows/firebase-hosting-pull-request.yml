@@ -6,15 +6,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Building FrontEnd
+        run: npm ci && npm run build
+      - name: Deploying FrontEnd
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NEARUAPPLICATION }}'
           channelId: live
           projectId: nearuapplication
-      - run: cd functions/ && npm install
-      - name: deploy to production
+      - name: Install Functions Dependencies
+        run: cd functions/ && npm install
+      - name: Deploy Firebase Functions
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only functions
