@@ -94,7 +94,7 @@ export default class ScanPage extends Component {
                 <Form.Group className="mb-3">
                   <Form.Label>Enter your mobile number</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="tel"
                     disabled={!tag}
                     onChange={this.handleUpdateText.bind(this, "phone")}
                     placeholder="+20-xxx-xxx-xxxx"
