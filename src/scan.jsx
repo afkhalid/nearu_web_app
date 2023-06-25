@@ -5,7 +5,7 @@ import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import fireBaseApp from "./configs/firebaseInit.js";
 import {
   getFunctions,
-  connectFunctionsEmulator,
+  // connectFunctionsEmulator,
   httpsCallable,
 } from "firebase/functions";
 import MadeWithLove from "./widgets/made_with_love";
@@ -21,10 +21,10 @@ export default function ScanPage(props) {
 
   const tagUuid = getParameterByName("code", props);
   const functions = getFunctions(fireBaseApp);
-  const getUserInformation = httpsCallable(functions, "getUserInformation");
-  // connectFunctionsEmulator(functions, "localhost", 5001);"
+  // connectFunctionsEmulator(functions, "localhost", 5001);
 
   useEffect(() => {
+    const getUserInformation = httpsCallable(functions, "getUserInformation");
     const fetchData = async () => {
       try {
         const tag = await getUserInformation({ code: tagUuid });
@@ -43,7 +43,7 @@ export default function ScanPage(props) {
 
     fetchData();
     // window.history.replaceState({}, "", "/scan.html");
-  }, [getUserInformation, tagUuid]);
+  }, [tagUuid, functions]);
 
   const handleNumberOperation = () => {
     if (isMobile()) {
@@ -131,50 +131,60 @@ export default function ScanPage(props) {
                   required
                 />
               </Form.Group>
-              <Form.Group className="mt-5">
-                <Button variant="primary" disabled={!tag} type="submit">
-                  Send Message
-                </Button>
-                {tag && tag.showPhoneNumberWhenScanned ? (
-                  isMobile() ? (
-                    <a href={`tel:${tag.phoneNumber}`}>
+              {isLoading ? (
+                <div className="text-center">
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    aria-hidden="true"
+                  />
+                </div>
+              ) : (
+                <Form.Group className="mt-5">
+                  <Button variant="primary" disabled={!tag} type="submit">
+                    Send Message
+                  </Button>
+                  {tag && tag.showPhoneNumberWhenScanned ? (
+                    isMobile() ? (
+                      <a href={`tel:${tag.phoneNumber}`}>
+                        <Button
+                          className="show-number-button"
+                          variant="secondary"
+                          disabled={!tag}
+                        >
+                          Call Owner
+                        </Button>
+                      </a>
+                    ) : (
                       <Button
                         className="show-number-button"
                         variant="secondary"
                         disabled={!tag}
+                        onClick={handleNumberOperation}
                       >
-                        Call Owner
+                        {showPhoneNumber ? tag.phoneNumber : "Show Number"}
                       </Button>
-                    </a>
+                    )
                   ) : (
-                    <Button
-                      className="show-number-button"
-                      variant="secondary"
-                      disabled={!tag}
-                      onClick={handleNumberOperation}
-                    >
-                      {showPhoneNumber ? tag.phoneNumber : "Show Number"}
+                    ""
+                  )}
+                  {isLoading && !tag ? (
+                    <Button className="show-number-button" variant="secondary">
+                      <Spinner
+                        as="span"
+                        animation="grow"
+                        className="loading"
+                        role="status"
+                        size="sm"
+                        aria-hidden="true"
+                      />
+                      Loading
                     </Button>
-                  )
-                ) : (
-                  ""
-                )}
-                {isLoading && !tag ? (
-                  <Button className="show-number-button" variant="secondary">
-                    <Spinner
-                      as="span"
-                      animation="grow"
-                      className="loading"
-                      role="status"
-                      size="sm"
-                      aria-hidden="true"
-                    />
-                    Loading
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Form.Group>
+                  ) : (
+                    ""
+                  )}
+                </Form.Group>
+              )}
             </Form>
           </div>
         </div>
