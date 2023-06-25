@@ -42,7 +42,7 @@ export default function ScanPage(props) {
     };
 
     fetchData();
-    // window.history.replaceState({}, "", "/scan.html");
+    window.history.replaceState({}, "", "/scan.html");
   }, [tagUuid, functions]);
 
   const handleNumberOperation = () => {
@@ -75,8 +75,8 @@ export default function ScanPage(props) {
       });
 
       if (result?.data) {
-        setIsLoading(false);
         window.open("/confirmation.html", "_self");
+        setIsLoading(false);
       }
     } catch (error) {
       // Handle error if necessary
