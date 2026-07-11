@@ -8,22 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Github Actions Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Building Frontend
         run: npm ci && npm run build
-      - name: Deploying Frontend
+      # PRs deploy to an ephemeral per-PR preview channel only (channelId omitted).
+      # Never deploy to the live channel or functions from a PR — those happen
+      # from `main` in firebase-hosting-merge.yml. See IMPROVEMENTS.md #C6.
+      - name: Deploying Frontend to Preview Channel
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NEARUAPPLICATION }}'
-          channelId: live
           projectId: nearuapplication
-      - name: Installing Backend Dependencies
-        run: cd functions/ && npm install
-      - name: Deploying Backend
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only functions
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-

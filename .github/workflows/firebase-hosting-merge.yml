@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Github Actions Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Building Frontend
         run: npm ci && npm run build
       - name: Deploying Frontend
@@ -22,10 +22,14 @@ jobs:
           projectId: nearuapplication
       - name: Installing Backend Dependencies
         run: cd functions/ && npm install
+      # Deploy Cloud Functions AND Firestore security rules from main only, so
+      # rule changes are auditable through git/CI (not edited in the console).
+      # Scoped to firestore:rules — NOT firestore:indexes — to avoid clobbering
+      # console-managed composite indexes. See IMPROVEMENTS.md #C0/#C3.
       - name: Deploying Backend
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only functions
+          args: deploy --only functions,firestore:rules
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
