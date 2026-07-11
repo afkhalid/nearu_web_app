@@ -14,6 +14,7 @@ export default function ScanPage(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [tag, setTag] = useState(null);
   const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+  const [sendError, setSendError] = useState(false);
   const [payload, setPayload] = useState({
     message: "",
     phone: "",
@@ -63,7 +64,8 @@ export default function ScanPage(props) {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    setIsLoading({ isLoading: true });
+    setIsLoading(true);
+    setSendError(false);
 
     try {
       const { message, phone } = payload;
@@ -77,10 +79,13 @@ export default function ScanPage(props) {
       if (result?.data) {
         window.open("/confirmation.html", "_self");
         setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        setSendError(true);
       }
     } catch (error) {
-      // Handle error if necessary
       setIsLoading(false);
+      setSendError(true);
     }
   };
 
@@ -97,6 +102,18 @@ export default function ScanPage(props) {
               <Alert className="mt-2" variant="info">
                 <Alert.Heading as="h5">Note from the Owner</Alert.Heading>
                 {tag.additionalInformation}
+              </Alert>
+            ) : (
+              ""
+            )}
+            {sendError ? (
+              <Alert
+                className="mt-2"
+                variant="danger"
+                onClose={() => setSendError(false)}
+                dismissible
+              >
+                Something went wrong sending your message. Please try again.
               </Alert>
             ) : (
               ""
