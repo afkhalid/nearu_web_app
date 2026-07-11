@@ -1,4 +1,4 @@
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
 const {v4: uuidv4} = require("uuid");
 
@@ -45,16 +45,21 @@ exports.sendMessage = functions.https.onCall(async(data) => {
       if (result.id) {
         const user = await getUser(tag.ownerUID);
         if (user && user.deviceToken) {
-          console.log(`Sending message to ${user.name} with 
+          console.log(`Sending message to ${user.fullName} with
           device token: ${user.deviceToken}`);
 
-          await admin.messaging().sendMulticast({
-            tokens: [user.deviceToken],
-            notification: {
-              title: "New Message!",
-              body: `You received a new message on your tag ${tag.name}`,
-            },
-          });
+          try {
+            await admin.messaging().send({
+              token: user.deviceToken,
+              notification: {
+                title: "New Message!",
+                body: `You received a new message on your tag ${tag.name}`,
+              },
+            });
+          } catch (notificationError) {
+            console.error(
+              "Failed to send push notification:", notificationError);
+          }
         }
       }
 
