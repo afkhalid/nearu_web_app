@@ -24,3 +24,9 @@ firestore-debug.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Local reference docs (kept for our own reference, not part of the repo)
+/DOCS.md
+
+# Firebase CLI local deploy cache (machine-specific, shouldn't be versioned)
+/.firebase/
