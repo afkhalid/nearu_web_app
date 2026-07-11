@@ -1,0 +1,100 @@
+rules_version = '2';
+
+// NearU production Firestore rules.
+//
+// Replaces the previous blanket time-expiry gate
+// (`allow read, write: if request.time < <date>`), which let ANYONE on the
+// internet read and write every document — including live payment tokens and
+// device tokens. See nearu_mobile_app/IMPROVEMENTS.md #C0/#C3 and
+// DATABASE.md ("Recommended target rules").
+//
+// Posture (as shipped):
+//   - Authentication is required for everything (except the public `plans`
+//     catalog read).
+//   - All WRITES are scoped to the owning user.
+//   - READS are currently authenticated-only (not yet owner-scoped). The
+//     deployed mobile client reads via field/collection-group queries
+//     (`users where phone == ...`, `collectionGroup('tags') where code == ...`,
+//     `where id == ...`) that owner-scoped read rules would deny — and rule
+//     changes hit every installed client instantly. Tightening reads to the
+//     owner is a tracked follow-up gated on migrating those client queries
+//     (phone lookup -> callable fn; tag lookup -> getUserInformation; deletes
+//     -> owner-scoped/path-based). Until then reads stay authenticated-only.
+//
+// No time-ceiling backstop is layered on: that sunset existed to cap an
+// abandoned *world-open* project. These rules are no longer world-open, so a
+// time gate would only reintroduce the silent-outage anti-pattern C0 was about.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // plans/{autoId} — public, non-sensitive subscription catalog.
+    // Read by clients; only ever written via the console / admin SDK.
+    match /plans/{planId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // users/{uid} — doc ID is the Firebase Auth UID.
+    match /users/{uid} {
+      // Read: authenticated-only for now (see file header). Follow-up: scope to
+      // request.auth.uid == resource.data.uid once the phone-lookup sign-in
+      // query moves to a callable Cloud Function.
+      allow read: if request.auth != null;
+
+      // A user may create their own doc (trial defaults for numberOfTags /
+      // subscriptionExpiryDate are written here and are allowed on create).
+      allow create: if request.auth != null && request.auth.uid == uid;
+
+      // A user may update their own doc, but entitlement and payment fields are
+      // immutable from the client — they must be written server-side (Cloud
+      // Function verifying payment, see IMPROVEMENTS.md #C2). This blocks a
+      // client from forging a paid subscription. Unchanged fields (e.g. a
+      // deviceToken refresh that rewrites the whole doc) are not in
+      // affectedKeys(), so ordinary profile updates still pass.
+      allow update: if request.auth != null && request.auth.uid == uid
+        && !request.resource.data.diff(resource.data).affectedKeys()
+             .hasAny(['numberOfTags', 'subscriptionExpiryDate',
+                      'paymentToken', 'paymentTransactionReference']);
+
+      allow delete: if request.auth != null && request.auth.uid == uid;
+
+      // users/{uid}/tags/{code} — owner's tags. Doc ID is the tag code.
+      match /tags/{code} {
+        // Read authenticated-only for now (deployed client resolves tags via a
+        // collectionGroup('tags').where(code) query). Follow-up: route lookups
+        // through the getUserInformation function and scope reads to the owner
+        // (#H3). Owner-scoped WRITES already prevent the #H3 cross-user delete.
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // messages/{autoId} — finder -> owner messages.
+    // Created only server-side by the sendMessage Cloud Function (admin SDK).
+    // The rule denies client create/update explicitly rather than relying on
+    // there being no client write path.
+    match /messages/{messageId} {
+      allow create, update: if false;
+      // Read authenticated-only for now; delete restricted to the recipient.
+      // Follow-up: scope read to resource.data.toUID == request.auth.uid once
+      // the inbox delete stops querying by the `id` field.
+      allow read: if request.auth != null;
+      allow delete: if request.auth != null
+                    && resource.data.toUID == request.auth.uid;
+    }
+
+    // blacklisted/{autoId} — per-owner blocked numbers.
+    match /blacklisted/{entryId} {
+      // Read authenticated-only for now; create/delete restricted to the owner.
+      // Follow-up: scope read to resource.data.userUID == request.auth.uid once
+      // unblock stops querying by the `id` field.
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.resource.data.userUID == request.auth.uid;
+      allow update: if false;
+      allow delete: if request.auth != null
+                    && resource.data.userUID == request.auth.uid;
+    }
+  }
+}
